@@ -1,0 +1,64 @@
+import json
+import boto3
+import pandas as pd
+import pymysql
+from io import StringIO
+from botocore.exceptions import ClientError
+import logging
+logger = logging.getLogger()
+logger.setLevel("INFO")
+
+# Configuration
+RDS_HOST = 'database-1.czk0i0ugomi8.ap-south-1.rds.amazonaws.com'
+RDS_PORT = 3306  # Change if necessary
+RDS_USER = 'admin'
+RDS_PASSWORD = 'JatinChamba1234'
+RDS_DB_NAME = 'oneture'
+S3_BUCKET = 'jatin-oneture'
+S3_KEY = 'output-data.csv'
+
+def lambda_handler(event, context):
+    # Connect to RDS
+    logger.info('## Connection to RDS Started')
+    connection = pymysql.connect(
+        host=RDS_HOST,
+        user=RDS_USER,
+        password=RDS_PASSWORD,
+        database=RDS_DB_NAME,
+        port=RDS_PORT
+    )
+    logger.info('## Connection to RDS DONE SUCCESSFULLY')
+    # Query data from RDS
+    query = "SELECT * FROM ORDERS;"
+    df = pd.read_sql(query, connection)
+    connection.close()
+    logger.info('## Connection CLOSED')
+    
+    logger.info('## Changing to CSV format')
+    # Convert DataFrame to CSV
+    csv_buffer = StringIO()
+    df.to_csv(csv_buffer, index=False)
+    logger.info('## CSV Conversion DONE')
+    
+    logger.info('## S3 Connection start')
+    # Write CSV to S3
+    s3_client = boto3.client('s3')
+    try:
+        s3_client.put_object(
+            Bucket=S3_BUCKET,
+            Key=S3_KEY,
+            Body=csv_buffer.getvalue(),
+            ContentType='text/csv')
+    except ClientError as s3_error:
+        print(f"Error uploading to S3: {s3_error}")
+        return {
+            'statusCode': 500,
+            'body': json.dumps(f"Error uploading to S3: {str(s3_error)}")
+        }
+    logger.info('## S3 Connection End')
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Data successfully written to S3')
+    }
+

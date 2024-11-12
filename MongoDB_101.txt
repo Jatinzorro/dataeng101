@@ -1,0 +1,490 @@
+MongoDB Theory Overview
+MongoDB is a NoSQL database designed for flexibility, scalability, and performance. Unlike traditional relational databases that store data in rows and tables, MongoDB stores data in JSON-like documents (BSON), which can be more easily modified and scaled horizontally across clusters of servers.
+
+This theoretical content will guide you through the essential components and concepts of MongoDB, helping you gain a deeper understanding of how it works, when to use it, and its advantages and challenges.
+
+1. MongoDB Architecture
+1.1. Documents and Collections
+Document: In MongoDB, data is stored in documents, which are JSON-like structures (in BSON format). BSON (Binary JSON) is a binary-encoded serialization format similar to JSON but with additional data types like ObjectId, Date, etc.
+
+Example document:
+
+json
+Copy code
+{
+    "_id": ObjectId("5f50c31e4c8d2f4bc0c6d357"),
+    "name": "Alice",
+    "age": 30,
+    "email": "alice@example.com"
+}
+A document is flexible, meaning different documents within the same collection can have different fields.
+
+Collection: A collection is analogous to a table in relational databases. It is a group of documents, but there’s no fixed schema, allowing for flexible data storage.
+
+Example: The users collection could contain documents for each user, with varying structures.
+
+1.2. Database and Namespace
+Database: A MongoDB instance can contain multiple databases. A database is a container for collections. It’s similar to a database in a relational database system.
+
+Example:
+
+bash
+Copy code
+use myDatabase
+Namespace: A namespace is the combination of a database name and collection name (e.g., myDatabase.users).
+
+1.3. MongoDB Server (Mongod)
+The MongoDB server process, mongod, is responsible for managing all database operations, including handling connections, managing data, and maintaining the integrity of the system.
+
+1.4. Sharding
+MongoDB uses sharding to horizontally scale data across multiple servers or clusters. A shard is a single instance of a database, and MongoDB automatically distributes the data across these shards. This allows MongoDB to handle large datasets and provide high availability.
+
+Sharding is done by splitting the data into chunks, each of which is assigned to a different shard based on a sharding key (usually an indexed field like user_id).
+
+1.5. Replication
+MongoDB provides replication to ensure data availability and redundancy. A replica set is a group of MongoDB servers that maintain the same data set. It includes:
+
+Primary: The main server that accepts writes.
+Secondary: Servers that replicate the primary’s data.
+In case the primary server goes down, one of the secondaries can be automatically promoted to primary to maintain availability.
+
+2. Key Features of MongoDB
+2.1. Schema-less and Flexible Structure
+Unlike relational databases, MongoDB does not require a predefined schema. Collections can store documents with different structures, and you don’t need to define tables or column data types beforehand.
+
+Schema Flexibility: You can change the structure of documents in a collection at any time without affecting other documents.
+Dynamic Schema: Fields can be added or removed from documents dynamically.
+2.2. High Performance
+Indexing: MongoDB allows the creation of indexes to improve query performance. It supports single-field, compound, hashed, geospatial, and full-text indexes.
+Aggregation Framework: MongoDB’s aggregation framework provides powerful querying capabilities such as grouping, filtering, sorting, and transforming data. It allows for complex data analysis and reporting.
+2.3. Horizontal Scaling
+MongoDB's architecture is designed for horizontal scalability. Sharding enables the database to scale out across multiple machines or clusters by distributing data across multiple nodes.
+
+2.4. ACID Transactions
+MongoDB supports ACID transactions at the document level. This ensures consistency and durability of data during write operations.
+
+Starting from version 4.0, MongoDB also supports multi-document transactions, making it suitable for use cases that require the consistency guarantees of traditional relational databases.
+2.5. Built-in Replication
+MongoDB supports replica sets, which provide fault tolerance and high availability. If one replica goes down, another replica can take over, ensuring that the database remains accessible.
+
+2.6. Geospatial Indexing
+MongoDB provides support for geospatial data and allows the creation of geospatial indexes to efficiently query geographic coordinates.
+
+3. Use Cases for MongoDB
+MongoDB is best suited for certain types of applications where flexibility, scalability, and performance are key considerations.
+
+3.1. Big Data Applications
+MongoDB’s ability to handle large datasets and scale horizontally across multiple machines makes it ideal for big data applications. This includes social media analytics, sensor data storage, and real-time data processing.
+
+3.2. Real-time Analytics
+MongoDB can store and analyze vast amounts of real-time data. Its Aggregation Framework and Indexing capabilities allow for fast querying and real-time analysis, making it suitable for applications like e-commerce recommendation engines, content personalization, and financial data analysis.
+
+3.3. Content Management Systems (CMS)
+MongoDB is widely used in content management and delivery platforms, where flexible schema and scalability are essential for handling diverse types of content (e.g., articles, images, videos).
+
+3.4. Internet of Things (IoT)
+MongoDB is commonly used in IoT systems where devices generate large volumes of data that need to be stored, processed, and queried. The ability to scale out horizontally makes MongoDB suitable for IoT applications like smart home systems and connected devices.
+
+3.5. Mobile Applications
+MongoDB’s flexible schema is useful in mobile applications where data may be rapidly changing and evolving. It provides an ideal backend database for applications that need to store user data, application settings, logs, and other dynamic data.
+
+3.6. Catalogs and Inventory Management
+MongoDB is well-suited for catalog-based systems, such as product catalogs, where the structure of the data (e.g., product attributes) might change frequently. The flexible schema design allows for easy adjustments without breaking the database.
+
+4. Advantages of MongoDB
+4.1. Flexible Data Model
+MongoDB’s flexible, schema-less design makes it ideal for storing data that doesn't fit neatly into rows and columns.
+4.2. High Availability
+With built-in replication, MongoDB ensures that data is always available, even in the event of hardware failure or system downtime.
+4.3. Horizontal Scalability
+Sharding allows MongoDB to handle very large datasets and traffic by distributing data across multiple servers.
+4.4. Powerful Query Language
+MongoDB supports a rich query language and powerful aggregation framework for complex queries, making it easy to retrieve and process data.
+4.5. Rich Ecosystem
+MongoDB has a rich ecosystem, including MongoDB Atlas (cloud service), drivers for multiple programming languages (JavaScript, Python, Java, etc.), and tools for data visualization, backup, and administration.
+4.6. Open Source
+MongoDB is open-source, making it an accessible option for developers. It also offers a commercial version with additional features and support.
+5. Limitations of MongoDB
+5.1. Data Duplication
+MongoDB’s flexibility can sometimes lead to data duplication if not carefully managed. For example, in the case of embedding large documents, the same information might get duplicated in multiple places.
+
+5.2. Lack of JOINs
+Although MongoDB provides a powerful aggregation framework and $lookup for performing joins, it does not natively support joins in the way relational databases do. For complex relationships involving multiple collections, it may require more application logic or denormalization.
+
+5.3. Memory Usage
+MongoDB’s in-memory processing can consume more RAM, especially when handling large datasets. For example, indexes and data caching can significantly increase memory usage.
+
+5.4. Consistency vs. Availability (CAP Theorem)
+While MongoDB provides high availability and partition tolerance (P and A in the CAP theorem), it might sacrifice strong consistency in some distributed setups (e.g., in sharded clusters). MongoDB can be configured to favor consistency over availability or vice versa, depending on the application's needs.
+
+6. MongoDB vs. Relational Databases
+Feature	MongoDB (NoSQL)	Relational Databases (SQL)
+Data Model	Document-based (BSON)	Table-based (rows and columns)
+Schema	Schema-less (flexible)	Fixed schema (rigid)
+Scalability	Horizontal scaling (sharding)	Vertical scaling (adding more power to a single server)
+Joins	Limited support (e.g., $lookup)	Full support (INNER, LEFT JOIN, etc.)
+ACID Transactions	Supported (single and multi-document)	Fully supported
+Data Integrity	Weaker compared to SQL databases	Strong, based on constraints and relationships
+Performance	High performance for large data volumes	Optimal for relational queries and transactions
+Best Use Cases	Big Data, Real-time analytics, Content management, IoT	Traditional business apps, financial systems, legacy systems
+7. Conclusion
+MongoDB is an excellent choice for modern, data-intensive applications that need flexibility, scalability, and performance. It allows for dynamic schema changes, easy horizontal scaling, and high availability, making it ideal for use cases involving big data, real-time analytics, and unstructured data.
+
+However, MongoDB is not always the right choice for every application. If you need complex relationships and strict consistency, or if your data can be easily modeled with a rigid schema, a traditional relational database may be more appropriate. Understanding the strengths and limitations of MongoDB will help you make an informed decision based on your project’s requirements.
+
+-------------------------------------------------------------------------------------------
+
+Let's Do some Hands-on stuff
+
+1. Introduction to MongoDB
+MongoDB is a NoSQL database that stores data in flexible, JSON-like documents (BSON), which can have varying structures. It's known for its scalability, high performance, and flexibility in managing large datasets.
+
+MongoDB Shell: The MongoDB shell (mongo) is used for interacting with the database.
+Database: In MongoDB, data is stored in databases. A database contains collections, and collections store documents (the actual data).
+2. MongoDB Setup
+Install MongoDB
+
+On Linux:
+bash
+Copy code
+sudo apt-get install -y mongodb
+On macOS (using Homebrew):
+bash
+Copy code
+brew tap mongodb/brew
+brew install mongodb-community@6.0
+On Windows: Use the official installer from the MongoDB download center.
+Start MongoDB Server
+
+bash
+Copy code
+mongod
+Access MongoDB Shell
+
+bash
+Copy code
+mongo
+3. Basic Commands
+1. Show Databases
+bash
+Copy code
+show databases
+2. Create/Use Database
+MongoDB creates a new database when you first store data in it.
+
+bash
+Copy code
+use myDatabase
+3. Show Collections in the Database
+bash
+Copy code
+show collections
+4. Create/Insert Documents
+Documents are inserted into a collection using insertOne() or insertMany(). MongoDB will automatically create a collection if it doesn't exist.
+
+Insert a single document:
+
+bash
+Copy code
+db.users.insertOne({
+    name: "Alice",
+    age: 30,
+    email: "alice@example.com"
+});
+Insert multiple documents:
+
+bash
+Copy code
+db.users.insertMany([
+    { name: "Bob", age: 25, email: "bob@example.com" },
+    { name: "Charlie", age: 35, email: "charlie@example.com" }
+]);
+5. Query Documents
+To find documents, use find(). MongoDB returns a cursor by default, so you can limit the result, project specific fields, etc.
+
+Find all documents:
+
+bash
+Copy code
+db.users.find()
+Find with conditions (where age is greater than 30):
+
+bash
+Copy code
+db.users.find({ age: { $gt: 30 } })
+Find with projection (select only specific fields):
+
+bash
+Copy code
+db.users.find({ age: { $gt: 25 } }, { name: 1, email: 1 })
+6. Update Documents
+Update one document:
+
+bash
+Copy code
+db.users.updateOne(
+    { name: "Alice" }, 
+    { $set: { age: 31 } }
+);
+Update multiple documents:
+
+bash
+Copy code
+db.users.updateMany(
+    { age: { $lt: 30 } }, 
+    { $set: { status: "young" } }
+);
+7. Delete Documents
+Delete one document:
+
+bash
+Copy code
+db.users.deleteOne({ name: "Alice" });
+Delete multiple documents:
+
+bash
+Copy code
+db.users.deleteMany({ age: { $lt: 30 } });
+8. Count Documents
+bash
+Copy code
+db.users.countDocuments({ age: { $gt: 30 } })
+4. Aggregation Framework
+MongoDB’s aggregation framework is powerful for data transformations. Use it for grouping, sorting, filtering, etc.
+
+1. Simple Aggregation Pipeline
+bash
+Copy code
+db.users.aggregate([
+    { $match: { age: { $gt: 25 } } },
+    { $group: { _id: "$age", count: { $sum: 1 } } },
+    { $sort: { _id: 1 } }
+])
+2. Grouping with Multiple Fields
+bash
+Copy code
+db.users.aggregate([
+    { $group: { _id: { age: "$age", status: "$status" }, count: { $sum: 1 } } }
+])
+3. $lookup (Joins)
+bash
+Copy code
+db.orders.aggregate([
+    { $lookup: {
+        from: "products",
+        localField: "productId",
+        foreignField: "_id",
+        as: "product_details"
+    }}
+])
+4. Sorting and Limiting Results
+bash
+Copy code
+db.users.aggregate([
+    { $sort: { age: 1 } },
+    { $limit: 5 }
+])
+5. Projecting Specific Fields
+bash
+Copy code
+db.users.aggregate([
+    { $project: { name: 1, age: 1, email: 1 } }
+])
+5. Indexing
+MongoDB supports indexes to optimize query performance. Creating an index can significantly speed up searches but can slow down write operations.
+
+1. Create an Index
+bash
+Copy code
+db.users.createIndex({ email: 1 })
+2. View Indexes
+bash
+Copy code
+db.users.getIndexes()
+3. Drop an Index
+bash
+Copy code
+db.users.dropIndex("email_1")
+4. Compound Index
+bash
+Copy code
+db.users.createIndex({ age: 1, name: 1 })
+5. Unique Index
+bash
+Copy code
+db.users.createIndex({ email: 1 }, { unique: true })
+6. Data Modeling
+When designing MongoDB schemas, consider the trade-offs between embedding and referencing data. Both approaches have their use cases.
+
+1. Embedding (Denormalization)
+Use this when you have a small set of data that doesn’t change often.
+
+Example: Blog Post with Comments:
+
+json
+Copy code
+{
+    "_id": 1,
+    "title": "My First Blog Post",
+    "content": "This is a post about MongoDB.",
+    "comments": [
+        { "author": "Alice", "text": "Great post!" },
+        { "author": "Bob", "text": "Very informative." }
+    ]
+}
+2. Referencing (Normalization)
+Use this when data is large or changes frequently.
+
+Example: Blog Post with Separate Comments Collection:
+
+json
+Copy code
+// Posts Collection
+{
+    "_id": 1,
+    "title": "My First Blog Post",
+    "content": "This is a post about MongoDB."
+}
+
+// Comments Collection
+{
+    "_id": 101,
+    "postId": 1,
+    "author": "Alice",
+    "text": "Great post!"
+}
+7. Advanced Features
+1. Sharding (Horizontal Scaling)
+Sharding allows MongoDB to distribute data across multiple machines. MongoDB automatically splits data into chunks and distributes them across shards.
+
+bash
+Copy code
+sh.enableSharding("myDatabase")
+sh.shardCollection("myDatabase.users", { "age": 1 })
+2. Transactions
+MongoDB supports multi-document ACID transactions for operations involving multiple documents or collections.
+
+bash
+Copy code
+session = db.getMongo().startSession();
+session.startTransaction();
+
+db.users.updateOne({ _id: 1 }, { $set: { status: "active" } });
+db.orders.updateOne({ _id: 1 }, { $set: { status: "shipped" } });
+
+session.commitTransaction();
+8. MongoDB in Code (Python Example)
+1. Install MongoDB Driver (PyMongo)
+bash
+Copy code
+pip install pymongo
+2. Connect to MongoDB
+python
+Copy code
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://localhost:27017/')
+db = client.myDatabase
+users = db.users
+3. Insert Documents
+python
+Copy code
+users.insert_one({"name": "Alice", "age": 30, "email": "alice@example.com"})
+users.insert_many([
+    {"name": "Bob", "age": 25, "email": "bob@example.com"},
+    {"name": "Charlie", "age": 35, "email": "charlie@example.com"}
+])
+4. Query Documents
+python
+Copy code
+for user in users.find({"age": {"$gt": 30}}):
+    print(user)
+5. Update Documents
+python
+Copy code
+users.update_one({"name": "Alice"}, {"$set": {"age": 31}})
+6. Delete Documents
+python
+Copy code
+users.delete_one({"name": "Alice"})
+9. MongoDB Security
+1. Enable Authentication
+Edit the mongod.conf file to enable authentication.
+
+yaml
+Copy code
+security:
+  authorization: "enabled"
+Create an admin user:
+
+bash
+Copy code
+use admin
+db.createUser({ user: "admin", pwd: "password", roles: [ { role: "root", db: "admin" } ] })
+2. Create User for Specific Database
+bash
+Copy code
+use myDatabase
+db.createUser({
+    user: "appUser",
+    pwd: "password",
+    roles: [ { role: "readWrite", db: "myDatabase" } ]
+})
+10. Backups and Restores
+1. Backup (using mongodump)
+bash
+Copy code
+mongodump --out /path/to/backup
+2. Restore (using mongorestore)
+bash
+Copy code
+mongorestore /path/to/backup
+11. MongoDB Atlas (Cloud Service)
+If you want to work with MongoDB in the cloud, MongoDB Atlas is a fully-managed cloud database service. You can easily deploy, manage, and scale MongoDB instances in the cloud.
+
+Sign up for MongoDB Atlas: https://www.mongodb.com/cloud/atlas
+Create Cluster and Connect: Atlas provides easy-to-follow steps to create a cluster and connect your application.
+
+
+
+
+
+
+Some miscellaneous Work
+db.movies.aggregate([
+  {
+    $match: { year: 2007 }  
+  },
+  {
+    $group: {
+      _id: "$year",                      
+      averageVotes: { $avg: "$Votes" } 
+    }
+  }
+])
+
+mongoexport -u root -p yjh2pl7b8dSDkyY2ZBMGjF2P --authenticationDatabase admin -d entertainment -c movies --host mongo --type=csv --fields _id,title,year,rating,director --out partial_data.csv
+
+mongoimport -u root -p yjh2pl7b8dSDkyY2ZBMGjF2P --authenticationDatabase admin -d entertainment -c movies --host mongo movies.json
+
+
+CREATE KEYSPACE entertainment WITH replication = {'class':'SimpleStrategy','replication_factor': 3};
+
+CREATE TABLE IF NOT EXISTS movies (
+    id TEXT PRIMARY KEY,
+    title TEXT,
+    year TEXT,
+    rating TEXT,
+    director TEXT);
+
+COPY entertainment.movies(id, title, year, rating, director) FROM '/home/project/partial_data.csv' WITH DELIMETER=',' HEADER = TRUE;
+
+
+db.electronics.aggregate([
+  { $match: { type: "smart phone" } },  
+  { $group: { _id: null, averageScreenSize: { $avg: "$screen size" } } }  ]);
+
+mongoexport -u root -p tHyBVMB1yskILxFzl797QYDG --authenticationDatabase admin -d catalog -c electronics --host mongo --type=csv --fields _id,type,model --out electronics.csv
+
+
+
